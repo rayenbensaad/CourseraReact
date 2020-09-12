@@ -15,7 +15,7 @@ function RenderDish({dish}) {
     return (
         <div className="col-12 col-md-5 m-1">
             <Card>
-            <CardImg top src={baseUrl +'assets/'+ dish.image} alt={dish.name} />
+                <CardImg top src={baseUrl + dish.image} alt={dish.name} />
                 <CardBody>
                     <CardTitle>{dish.name}</CardTitle>
                     <CardText>{dish.description}</CardText>
@@ -25,31 +25,33 @@ function RenderDish({dish}) {
     )
 } 
 
-function RenderComments({comments, addComment, dishId}) {
+function RenderComments({comments, postComment, dishId}) {
     if (comments != null) {
         const commentList = comments.map(comment => {
             return (
             <div>
-                <p> {comment.comment} </p>
-                <p>-- {comment.author}, 
-                {new Intl.DateTimeFormat('en-US', 
-                    {   year: 'numeric',
-                        month: 'short',
-                        day: '2-digit'
-                    }).format(new Date(Date.parse(comment.date)))} </p>
+                <ul className="list-unstyled">
+                    <li key={comment.id}>
+                    <p> {comment.comment} </p>
+                    <p>-- {comment.author}, <span> </span>
+                    {new Intl.DateTimeFormat('en-US', 
+                        {   year: 'numeric',
+                            month: 'short',
+                            day: '2-digit'
+                        }).format(new Date(Date.parse(comment.date)))} </p>
+                    </li>
+                </ul>
             </div>
             );
         });
     
         return (
-            <div>
-            <h4>Comments</h4>
-                <div>
-                    {commentList}
-                </div>
-                <div>
-                    <CommentForm dishId={dishId} addComment={addComment} />
-                </div>
+            <div className="col-12 col-md-5 m-1">
+                <h4>Comments</h4>
+                    <div>
+                        {commentList}
+                    </div>
+                    <CommentForm dishId={dishId} postComment={postComment} />
             </div>
         );
         }
@@ -95,7 +97,7 @@ const DishDetail = (props) => {
                 <div className="row">
                     <RenderDish dish={props.dish} />                    
                     <RenderComments comments={props.comments} 
-                        addComment={props.addComment}
+                        postComment={props.postComment}
                         dishId={props.dish.id} />
                 </div>
             </div>
@@ -126,7 +128,7 @@ class CommentForm extends Component {
     
     handleSubmit(values) {
         this.toggleModal();
-        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+        this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render() {
